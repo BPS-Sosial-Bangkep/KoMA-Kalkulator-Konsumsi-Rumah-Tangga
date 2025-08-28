@@ -450,42 +450,7 @@
 </head>
 <body>
 <script>
-  // Perbaiki agar input dan interaksi tetap bisa berjalan saat offline dengan data cache
-
-// Pastikan service worker tidak memblokir request API atau resource penting
-// Jika Anda menggunakan service worker, pastikan caching strategy:
-// - Cache file statis (HTML, CSS, JS) untuk offline
-// - Jangan cache response yang harus selalu fresh (misal API atau data dinamis)
-
-// Contoh service-worker.js sederhana untuk cache statis dan fallback ke cache saat offline:
-
-/*
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open('koma-cache-v1').then(cache => {
-      return cache.addAll([
-        '/',
-        '/index.html',
-        '/manifest.json',
-        '/service-worker.js',
-        '/style.css',
-        // tambahkan file lain yang diperlukan
-      ]);
-    })
-  );
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
-});
-*/
-
-// Di kode utama, pastikan fungsi loadExcelFromDrive dan loadFromServer bisa fallback ke cache localStorage saat offline
-// Contoh sudah ada di kode Anda, pastikan tidak ada error saat offline
-
-// Tambahkan pengecekan koneksi internet sebelum fetch data
+ 
 function isOnline() {
   return window.navigator.onLine;
 }
@@ -533,13 +498,15 @@ window.addEventListener('offline', () => {
   document.getElementById('loadStatus').textContent = 'Anda sedang offline. Data akan diambil dari cache.';
 });
 // Register service worker untuk offline support
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register('./service-worker.js').then(function(registration) {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-      }, function(err) {
-        console.log('ServiceWorker registration failed: ', err);
-      });
+   if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(registration => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('Service Worker registration failed:', error);
+        });
     });
   }
 </script>
@@ -1459,4 +1426,5 @@ function submitPriceReport() {
   }
 }
 </script>
+
 
