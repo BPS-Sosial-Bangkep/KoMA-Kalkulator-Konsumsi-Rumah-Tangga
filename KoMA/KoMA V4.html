@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOMA V4</title>
+  <!-- Tambahkan kode ini di head -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <style>
+    
+     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    margin: 0;
+    padding: 20px 40px;
+  }
+  body {
+    padding-bottom: 200px; /* Sesuaikan nilai ini agar cukup untuk popup help */
+  }
+  h2 {
+    color: #4f46e5;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-right: 15px;
+  }
+
+  select, input[type=number], input[type=text], textarea {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+  }
+  
+  select:focus, input[type=number]:focus, input[type=text]:focus, textarea:focus {
+    border-color: #4f46e5;
+    outline: none;
+    box-shadow: 0 0 5px rgba(79, 70, 229, 0.3);
+  }
+
+  button {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+  }
+  
+  button:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+
+  .tabs {
+    display: flex;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .tab-button {
+    background-color: #e0e7ff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #4f46e5;
+    transition: all 0.2s ease;
+  }
+  
+  .tab-button:hover {
+    background-color: #c7d2fe;
+  }
+  
+  .tab-button.active {
+    background-color: #4f46e5;
+    color: white;
+  }
+  
+  .tab-content {
+    background: white;
+    padding: 20px;
+    border-radius: 0 12px 12px 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    margin-top: 25px;
+  }
+
+  thead tr {
+    background-color: #4f46e5;
+    color: white;
+    border-radius: 12px;
+  }
+
+  thead th {
+    padding: 14px 20px;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  tbody tr {
+    background-color: #fefefe;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    transition: background-color 0.2s ease;
+  }
+
+  tbody tr:hover {
+    background-color: #eef2ff;
+  }
+
+  tbody td {
+    padding: 12px 18px;
+    vertical-align: middle;
+  }
+
+  .subtotal-row {
+    background-color: #e0e7ff;
+    font-weight: 700;
+    box-shadow: none;
+  }
+
+  .validation-icon {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  input.quantityInput, input.priceInput {
+    width: 100px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    padding: 6px 10px;
+    font-size: 1rem;
+  }
+  
+  input.quantityInput:focus, input.priceInput:focus {
+    border-color: #4f46e5;
+    outline: none;
+    box-shadow: 0 0 5px rgba(79, 70, 229, 0.3);
+  }
+
+  .lockBtn, .helpBtn, .removeBtn {
+    font-size: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 0 2px;
+    padding: 2px 5px;
+    border-radius: 4px;
+  }
+  
+  .helpBtn {
+  color: #1e40af; /* Ubah warna tombol help menjadi biru terang */
+  font-weight: 700;
+  text-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+  .removeBtn {
+  color: #1e40af; /* Ubah warna tombol close menjadi merah terang */
+  font-weight: 700;
+  text-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+  .lockBtn:hover, .helpBtn:hover {
+    color: #1e40af;
+    background-color: rgba(79, 70, 229, 0.1);
+  }
+  .removeBtn:hover {
+    color: #dc2626;
+    background-color: rgba(79, 70, 229, 0.1);
+  }
+
+  .action-menu {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .action-toggle {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+    border: none;
+    border-radius: 4px;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .action-toggle:hover {
+    background-color: #c7d2fe;
+  }
+  
+  .action-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    min-width: 120px;
+    z-index: 10;
+    display: none;
+  }
+  
+  .action-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    color: #333;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .action-dropdown button:first-child {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+  
+  .action-dropdown button:last-child {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+  }
+  
+  .action-dropdown button:hover {
+    background-color: #f1f5f9;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .action-dropdown.show {
+    display: block;
+  }
+
+  #popupConfirm {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    padding: 20px 25px;
+    width: 320px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    z-index: 1000;
+  }
+
+  #popupConfirm button {
+    margin-top: 12px;
+    margin-right: 10px;
+    padding: 8px 16px;
+    border-radius: 8px;
+  }
+
+  .help-table {
+    margin-top: 8px;
+    border-collapse: collapse;
+    box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  .help-table th, .help-table td {
+    border: 1px solid #cbd5e1;
+    padding: 8px 15px;
+    background: white;
+  }
+  
+  .help-table th {
+    background-color: #4f46e5;
+    color: white;
+  }
+  
+  .help-popup {
+    position: absolute;
+    z-index: 9999;
+    background: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 12px 18px;
+    min-width: 220px;
+    left: 50%;
+    transform: translateX(-50%);
+    color:#1e40af
+  }
+  
+  .help-popup .close-btn {
+    float: right;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #dc2626;
+    cursor: pointer;
+    font-weight: 700;
+    text-shadow: 0 0 2px rgba(0,0,0,0.3)
+  }
+  
+  .form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f8fafc;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-success {
+    background-color: #d1fae5;
+    color: #047857;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .locked-row {
+    background-color: #f8fafc;
+  }
+
+  .category-row {
+    background-color: #f1f5f9;
+    font-weight: 700;
+    padding: 10px 15px;
+    color: #4f46e5;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    body {
+      padding: 15px 10px;
+    }
+    
+    .tab-content {
+      padding: 15px;
+    }
+    
+    #form-area {
+      max-width: 100%;
+    }
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 10px 5px;
+    }
+    
+    .tab-content {
+      padding: 10px;
+      border-radius: 8px;
+    }
+    
+    #form-area {
+      padding: 0;
+    }
+    
+    table {
+      font-size: 0.9rem;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    
+    thead th, tbody td {
+      padding: 8px 6px;
+    }
+    
+    button, .tab-button {
+      padding: 8px 12px;
+      font-size: 0.9rem;
+    }
+    
+    input.quantityInput, input.priceInput, select {
+      width: 80px;
+      font-size: 0.9rem;
+      padding: 5px 6px;
+    }
+    
+    .tabs {
+      flex-direction: column;
+    }
+    
+    .tab-button {
+      border-radius: 8px;
+      margin-bottom: 5px;
+    }
+    
+    .tab-content {
+      border-radius: 8px;
+    }
+  }
+
+  .quantity-unit-cell {
+    display: flex;
+    align-items: center;
+  }
+
+  .quantity-unit-cell input {
+    margin-right: 8px;
+  }
+
+  .unit-label {
+    color: #4f46e5;
+    font-weight: 600;
+  }
+  </style>
+</head>
+<body>
+<script>
+// Register service worker untuk offline support
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./service-worker.js').then(function(registration) {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, function(err) {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+    });
+  }
+</script>
+
+<h2>KOMA V4</h2>
+<div class="tabs">
+  <button class="tab-button active" onclick="openTab(event, 'tab1')">Menu Utama</button>
+  <button class="tab-button" onclick="openTab(event, 'tab2')">Lapor Harga</button>
+</div>
+
+<div id="tab1" class="tab-content" style="display: block;">
+  <div style="margin-bottom:15px;">
+    <select id="excelSourceSelect" style="margin-right:10px;">
+      <option value="bangkep">Banggai Kepulauan</option>
+      <option value="balut">Banggai Laut</option>
+    </select>
+    <button onclick="loadExcelFromDrive()" style="background-color:#34A853;">Load Data</button>
+    <span id="loadStatus"></span>
+    <button onclick="exportToExcel()" style="background-color:#4285F4; margin-left:10px;">Export ke Excel</button>
+  </div>
+  <div id="form-area" style="display:none; max-width:350px;">
+    <div style="margin-bottom:10px;">
+      <label for="categorySelect">Kategori:</label>
+      <select id="categorySelect"></select>
+    </div>
+    <div style="margin-bottom:10px;">
+      <label for="itemSelect">Item:</label>
+      <select id="itemSelect"></select>
+    </div>
+    <div style="margin-bottom:10px;">
+      <label for="unitSelect">Satuan:</label>
+      <select id="unitSelect"></select>
+    </div>
+    <div style="margin-bottom:10px;">
+      <label for="quantityInput">Jumlah:</label>
+      <input type="number" id="quantityInput" step="0.01" min="0">
+    </div>
+    <div style="margin-bottom:10px;">
+      <label for="priceInput">Harga (Rp):</label>
+      <input type="number" id="priceInput" step="1" min="0">
+    </div>
+    <button onclick="addItem()">Tambah</button>
+  </div>
+
+  <div id="popupConfirm" class="popup" style="display:none;">
+    <div id="popupMessage"></div>
+    <button onclick="confirmConversion(true)">Lanjutkan</button>
+    <button onclick="confirmConversion(false)">Batal</button>
+  </div>
+
+  <table id="itemTable">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Jumlah</th>
+        <th>Harga</th>
+        <th>Aksi</th>
+        <th>Validasi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot>
+      <tr><td colspan="5"><button onclick="clearAll()">Hapus Semua</button></td></tr>
+      <tr><td colspan="2"><strong>Total:</strong></td><td colspan="3" id="grandTotal">Rp. 0</td></tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- Tab 2: Lapor Harga -->
+<div id="tab2" class="tab-content" style="display: none;">
+  <div style="margin-bottom:15px;">
+    <p>Silakan gunakan form ini untuk melaporkan harga pasar terkini:</p>
+    <span id="reportStatus"></span>
+  </div>
+  <div class="form-container">
+    <form id="reportForm">
+      <div class="form-group">
+        <label for="reportCategorySelect">Kategori:</label>
+        <select id="reportCategorySelect"></select>
+      </div>
+      <div class="form-group">
+        <label for="reportItemSelect">Item:</label>
+        <select id="reportItemSelect"></select>
+      </div>
+      <div class="form-group">
+        <label for="reportUnitSelect">Satuan:</label>
+        <select id="reportUnitSelect"></select>
+      </div>
+      <div id="priceReference" style="margin-bottom:15px;color:#4f46e5;font-weight:600;"></div>
+      <div class="form-group">
+        <label for="reportPriceInput">Harga (Rp):</label>
+        <input type="number" id="reportPriceInput" min="0" required>
+      </div>
+      <div class="form-group">
+        <label for="reportLocationInput">Lokasi:</label>
+        <input type="text" id="reportLocationInput" required>
+      </div>
+      <div class="form-group">
+        <label for="reportNotesInput">Catatan:</label>
+        <textarea id="reportNotesInput" rows="3" style="width:100%;border-radius:6px;border:1px solid #cbd5e1;padding:8px;"></textarea>
+      </div>
+      <button type="button" onclick="submitPriceReport()">Kirim Laporan</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+  let excelData = [], conversionMap = {}, selectedConversion = null;
+  
+  // Excel file URLs - using a content delivery proxy to bypass CORS issues
+  const EXCEL_URLS = {
+    bangkep: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/1y-03n0ebtRkaE1okZxqMO00mXNsQygb8/export?format=xlsx'),
+    balut: 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/1y-03n0ebtRkaE1okZxqMO00mXNsQygb8/export?format=xlsx')
+  };
+  
+  function openTab(evt, tabId) {
+    // Sembunyikan semua tab content
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(tc => tc.style.display = 'none');
+
+    // Hapus kelas active pada semua tab buttons
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+
+    // Tampilkan tab yang dipilih
+    document.getElementById(tabId).style.display = 'block';
+
+    // Tambah kelas active pada tombol yang diklik
+    evt.currentTarget.classList.add('active');
+    
+    // Jika tab2 dibuka dan data excel sudah diload, inisialisasi dropdown di tab2
+    if (tabId === 'tab2' && excelData.length > 0) {
+      initReportDropdowns();
+    }
+  }
+  
+  function loadExcelFromDrive() {
+    const statusEl = document.getElementById('loadStatus');
+    const excelSource = document.getElementById('excelSourceSelect').value;
+    
+    // Cek apakah data sudah ada di localStorage
+    const cachedData = localStorage.getItem(`komaExcelData_${excelSource}`);
+    const lastUpdate = localStorage.getItem(`komaDataLastUpdate_${excelSource}`);
+    
+    if (cachedData) {
+      try {
+        excelData = JSON.parse(cachedData);
+        statusEl.textContent = `Data ${excelSource} loaded from cache (Last update: ${lastUpdate || 'unknown'})`;
+        document.getElementById('form-area').style.display = 'block';
+        initDropdowns();
+        
+        // Jika tab 2 sedang aktif, inisialisasi dropdown di tab2 juga
+        if (document.querySelector('.tab-button.active').textContent === 'Lapor Harga') {
+          initReportDropdowns();
+        }
+        
+        // Tambahkan original position untuk urutan
+        excelData.forEach((item, index) => {
+          item.originalPosition = index;
+        });
+        
+        // Tampilkan opsi untuk refresh dari server
+        const refreshBtn = document.createElement('button');
+        refreshBtn.textContent = 'Refresh Data';
+        refreshBtn.style.marginLeft = '10px';
+        refreshBtn.onclick = () => loadFromServer(excelSource);
+        statusEl.appendChild(refreshBtn);
+        
+        return; // Keluar dari fungsi karena data sudah dimuat dari cache
+      } catch (error) {
+        console.error('Error loading cached data:', error);
+        // Lanjut ke loading dari server jika cache error
+      }
+    }
+    
+    loadFromServer(excelSource);
+  }
+  
+function loadFromServer(excelSource) {
+    const statusEl = document.getElementById('loadStatus');
+    statusEl.textContent = `Loading ${excelSource} from server...`;
+    
+    // Ambil URL berdasarkan sumber yang dipilih
+    const EXCEL_FILE_URL = EXCEL_URLS[excelSource];
+    
+    fetch(EXCEL_FILE_URL)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.arrayBuffer();
+      })
+      .then(data => {
+        try {
+          const workbook = XLSX.read(data, {type: 'array'});
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          excelData = XLSX.utils.sheet_to_json(sheet);
+          
+          // Tambahkan original position untuk urutan
+          excelData.forEach((item, index) => {
+            item.originalPosition = index;
+          });
+          
+          // Simpan ke localStorage
+          localStorage.setItem(`komaExcelData_${excelSource}`, JSON.stringify(excelData));
+          const now = new Date().toLocaleString();
+          localStorage.setItem(`komaDataLastUpdate_${excelSource}`, now);
+          
+          statusEl.textContent = `Data ${excelSource} loaded successfully from server! (${now})`;
+          document.getElementById('form-area').style.display = 'block';
+          initDropdowns();
+          
+          // Jika tab 2 sedang aktif, inisialisasi dropdown di tab2 juga
+          if (document.querySelector('.tab-button.active').textContent === 'Lapor Harga') {
+            initReportDropdowns();
+          }
+        } catch (err) {
+          console.error('Error processing Excel file:', err);
+          statusEl.textContent = "Error processing data: " + err.message;
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching Excel file:', error);
+        statusEl.textContent = "Error loading data: " + error.message + ". Using cached data if available.";
+        
+        // Coba load dari cache jika gagal fetch
+        const cachedData = localStorage.getItem(`komaExcelData_${excelSource}`);
+        if (cachedData) {
+          try {
+            excelData = JSON.parse(cachedData);
+            const lastUpdate = localStorage.getItem(`komaDataLastUpdate_${excelSource}`) || 'unknown';
+            statusEl.textContent += ` Loaded from cache (Last update: ${lastUpdate})`;
+            document.getElementById('form-area').style.display = 'block';
+            initDropdowns();
+            
+            // Tambahkan original position untuk urutan jika belum ada
+            if (excelData.length > 0 && excelData[0].originalPosition === undefined) {
+              excelData.forEach((item, index) => {
+                item.originalPosition = index;
+              });
+            }
+            
+            if (document.querySelector('.tab-button.active').textContent === 'Lapor Harga') {
+              initReportDropdowns();
+            }
+          } catch (cacheError) {
+            console.error('Error loading cached data:', cacheError);
+            statusEl.textContent = "Failed to Load Data from server and cache";
+          }
+        }
+      });
+  }
+  
+  function initDropdowns() {
+    const categories = [...new Set(excelData.map(row => row.Category))];
+    const catSel = document.getElementById('categorySelect');
+    catSel.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+    catSel.addEventListener('change', updateItems);
+    document.getElementById('itemSelect').addEventListener('change', updateUnits);
+    updateItems();
+    document.getElementById('form-area').style.display = 'block';
+  }
+
+  function updateItems() {
+    const selectedCat = document.getElementById('categorySelect').value;
+    const filteredItems = excelData
+      .filter(row => row.Category === selectedCat);
+    
+    // Sort by original position to maintain Excel order
+    filteredItems.sort((a, b) => a.originalPosition - b.originalPosition);
+    
+    const items = [...new Set(filteredItems.map(row => row.Item))];
+    const itemSel = document.getElementById('itemSelect');
+    itemSel.innerHTML = items.map(i => `<option value="${i}">${i}</option>`).join('');
+    updateUnits();
+  }
+
+  function updateUnits() {
+    const item = document.getElementById('itemSelect').value;
+    const row = excelData.find(r => r.Item === item);
+    const unitSel = document.getElementById('unitSelect');
+    if (!row) return;
+    let units = [row.Unit];
+    conversionMap = {[row.Unit]: 1};
+    if (row['Conversion Rules']) {
+      row['Conversion Rules'].split(',').forEach(pair => {
+        const [alt, val] = pair.split(':');
+        units.push(alt.trim());
+        conversionMap[alt.trim()] = parseFloat(val);
+      });
+    }
+    unitSel.innerHTML = [...new Set(units)].map(u => `<option value="${u}">${u}</option>`).join('');
+  }
+
+  function confirmConversion(yes) {
+    document.getElementById('popupConfirm').style.display = 'none';
+    if (yes && selectedConversion) selectedConversion();
+    selectedConversion = null;
+  }
+
+  // Buat dua fungsi showAlertPopup terpisah untuk tab 1 dan tab 2 agar tidak saling tumpang tindih
+
+// Modifikasi showAlertPopupTab2 agar popup selalu muncul di atas tab 2,
+// tanpa mengubah visibilitas tab (tidak mengaktifkan tab 2 secara otomatis)
+
+function showAlertPopupTab2(message, callback) {
+  const popup = document.getElementById('popupConfirm');
+  const popupMessage = document.getElementById('popupMessage');
+  popupMessage.innerText = message;
+
+  const buttons = popup.querySelectorAll('button');
+  buttons[0].style.display = 'none'; // tombol Lanjutkan
+  buttons[1].innerText = 'OK';
+
+  buttons[1].onclick = () => {
+    popup.style.display = 'none';
+    if (callback) callback();
+  };
+
+  // Pastikan popup berada di atas tab 2 dengan z-index tinggi
+  popup.style.zIndex = 3000;
+
+  // Jika tab 2 tidak aktif, popup tetap muncul tapi mungkin tertutup konten tab 1
+  // Jadi kita posisikan popup sebagai child dari tab2 agar selalu muncul di atas tab2
+  const tab2 = document.getElementById('tab2');
+  if (!tab2.contains(popup)) {
+    tab2.appendChild(popup);
+  }
+
+  popup.style.position = 'fixed'; // pastikan fixed agar muncul di viewport
+  popup.style.display = 'block';
+}
+
+// Untuk showAlertPopupTab1, tetap gunakan popup sebagai child dari body agar muncul di atas tab1
+function showAlertPopupTab1(message, callback) {
+  const popup = document.getElementById('popupConfirm');
+  const popupMessage = document.getElementById('popupMessage');
+  popupMessage.innerText = message;
+
+  const buttons = popup.querySelectorAll('button');
+  buttons[0].style.display = 'none'; // tombol Lanjutkan
+  buttons[1].innerText = 'OK';
+
+  buttons[1].onclick = () => {
+    popup.style.display = 'none';
+    if (callback) callback();
+  };
+
+  popup.style.zIndex = 3000;
+
+  // Pastikan popup adalah child dari body agar muncul di atas tab1
+  if (popup.parentElement !== document.body) {
+    document.body.appendChild(popup);
+  }
+
+  popup.style.position = 'fixed';
+  popup.style.display = 'block';
+}
+
+  function addItem() {
+    const item = document.getElementById('itemSelect').value;
+    const category = document.getElementById('categorySelect').value;
+    const unit = document.getElementById('unitSelect').value;
+    const quantity = parseFloat(document.getElementById('quantityInput').value);
+    const price = parseFloat(document.getElementById('priceInput').value);
+    
+    // Validasi input
+    if (!item || !category || !unit || isNaN(quantity) || quantity <= 0 || isNaN(price) || price <= 0) {
+      showAlertPopupTab1('Mohon lengkapi semua field dengan benar');
+      return;
+    }
+    
+    const row = excelData.find(r => r.Item === item);
+    if (!row) return;
+
+    const standardUnit = row.Unit;
+    const conversionRate = conversionMap[unit];
+    const quantityInStandard = quantity * conversionRate;
+
+    if (unit !== standardUnit) {
+      selectedConversion = () => finalizeAddItem(category, item, quantityInStandard, standardUnit, price, row);
+      document.getElementById('popupMessage').innerText = `Satuan ${unit} akan dikonversi ke ${standardUnit}. Lanjutkan?`;
+      document.getElementById('popupConfirm').style.display = 'block';
+    } else {
+      finalizeAddItem(category, item, quantity, standardUnit, price, row);
+    }
+    
+    // Reset input fields after adding item
+    document.getElementById('quantityInput').value = '';
+    document.getElementById('priceInput').value = '';
+  }
+
+  function finalizeAddItem(category, item, quantity, unit, price, row) {
+    const table = document.getElementById('itemTable').querySelector('tbody');
+    const pricePerUnit = price / quantity;
+    const minPrice = parseFloat(row.MinPrice);
+    const maxPrice = parseFloat(row.MaxPrice);
+    const originalPosition = row.originalPosition || 0;
+
+    // Cari baris yang sudah ada untuk item yang sama
+    let existingRow = null;
+    const rows = Array.from(table.querySelectorAll('tr:not(.subtotal-row):not(.category-row)'));
+    for (const r of rows) {
+      if (r.dataset.item === item) {
+        existingRow = r;
+        break;
+      }
+    }
+
+    if (existingRow) {
+      // Update quantity dan price dengan menambahkan
+      const qtyInput = existingRow.querySelector('input.quantityInput');
+      const priceInput = existingRow.querySelector('input.priceInput');
+      let currentQty = parseFloat(qtyInput.value) || 0;
+      let currentPrice = parseFloat(priceInput.value) || 0;
+
+      currentQty += quantity;
+      currentPrice += price;
+
+      qtyInput.value = currentQty.toFixed(2);
+      priceInput.value = currentPrice.toFixed(0);
+
+      // Update price per unit & validasi icon
+      const newPricePerUnit = currentPrice / currentQty;
+      existingRow.dataset.pricePerUnit = newPricePerUnit;
+      const vicon = existingRow.querySelector('.validation-icon');
+      if (newPricePerUnit < minPrice) vicon.textContent = '⬇️';
+      else if (newPricePerUnit > maxPrice) vicon.textContent = '⬆️';
+      else vicon.textContent = '✅';
+
+      updateSubtotal();
+      updateGrandTotal();
+    } else {
+      // Buat baris baru
+      let icon = '✅';
+      if (pricePerUnit < minPrice) icon = '⬇️';
+      if (pricePerUnit > maxPrice) icon = '⬆️';
+
+      const tr = document.createElement('tr');
+      tr.dataset.category = category;
+      tr.dataset.item = item;
+      tr.dataset.originalPosition = originalPosition;
+      tr.innerHTML = `
+        <td>${item}</td>
+        <td class="quantity-unit-cell">
+          <input type="number" step="0.01" value="${quantity.toFixed(2)}" class="quantityInput" onchange="updateRow(this)">
+          <span class="unit-label">${unit}</span>
+        </td>
+        <td><input type="number" value="${price}" class="priceInput" onchange="updateRow(this)"></td>
+        <td>
+          <button class="lockBtn" data-locked="false">🔓</button>
+          <button class="helpBtn">?</button>
+          <button class="removeBtn">×</button>
+        </td>
+      <td class="validation-icon">${icon}</td>
+  `;
+      tr.dataset.locked = "false";
+      tr.dataset.unit = unit;
+      tr.dataset.min = minPrice;
+      tr.dataset.max = maxPrice;
+      tr.dataset.pricePerUnit = pricePerUnit;
+      
+      // Tambahkan ke tabel dan urutkan
+      table.appendChild(tr);
+      sortAndGroupItems();
+      updateSubtotal();
+      updateGrandTotal();
+    }
+  }
+
+  function showHelp(button) {
+    // Cek apakah popup sudah ada dan tombol help yang sama diklik
+    const existingPopup = document.querySelector('.help-popup');
+    if (existingPopup) {
+      // Ambil posisi tombol help yang diklik
+      const rect = button.getBoundingClientRect();
+      // Ambil posisi popup yang sudah ada
+      const popupRect = existingPopup.getBoundingClientRect();
+      // Jika posisi popup sudah di bawah tombol yang sama (top hampir sama), tutup popup
+      if (Math.abs(popupRect.top - (rect.bottom + 8)) < 2) {
+        existingPopup.remove();
+        return;
+      } else {
+        existingPopup.remove(); // Tutup popup lama sebelum buka baru
+      }
+    }
+
+    const tr = button.closest('tr');
+    const min = parseFloat(tr.dataset.min);
+    const max = parseFloat(tr.dataset.max);
+    const qtyInput = tr.querySelector('input.quantityInput');
+    const qty = parseFloat(qtyInput.value) || 0;
+    const unit = tr.dataset.unit || '';
+
+    const popup = document.createElement('div');
+    popup.className = 'help-popup';
+    popup.innerHTML = `
+      <button class="close-btn" onclick="this.parentElement.remove()">×</button>
+      <table class="help-table">
+        <tr><th></th><th>1 ${unit}</th><th>${qty.toFixed(2)} ${unit}</th></tr>
+        <tr><td>Min</td><td>Rp. ${parseInt(min).toLocaleString()}</td><td>Rp. ${(min * qty).toLocaleString()}</td></tr>
+        <tr><td>Max</td><td>Rp. ${parseInt(max).toLocaleString()}</td><td>Rp. ${(max * qty).toLocaleString()}</td></tr>
+      </table>
+    `;
+
+    // Posisi di bawah tombol help, center horizontal
+    const rect = button.getBoundingClientRect();
+    popup.style.position = 'fixed';
+    popup.style.left = '50%';
+    popup.style.transform = 'translateX(-50%)';
+    popup.style.top = (rect.bottom + 8) + 'px';
+
+    document.body.appendChild(popup);
+  }
+
+  function formatRupiah(angka) {
+    return Math.round(angka).toString();
+  }
+
+  function toggleLock(button) {
+    const row = button.closest('tr');
+    const isLocked = button.dataset.locked === 'true';
+    button.dataset.locked = isLocked ? 'false' : 'true';
+    button.innerHTML = isLocked ? '🔓' : '🔒';
+    row.classList.toggle('locked-row', !isLocked);
+    row.dataset.locked = button.dataset.locked; // Sinkronisasi dataset row
+    
+    // Store current price per unit if locking
+    if (!isLocked) {
+      const inputs = row.querySelectorAll('input');
+      const qty = parseFloat(inputs[0].value) || 0;
+      const price = parseFloat(inputs[1].value) || 0;
+      if (qty > 0 && price > 0) {
+        row.dataset.pricePerUnit = price / qty;
+      }
+    }
+  }
+
+  function updateRow(input) {
+    const tr = input.closest('tr');
+    const inputs = tr.querySelectorAll('input');
+    let qty = parseFloat(inputs[0].value) || 0;
+    let price = parseFloat(inputs[1].value) || 0;
+    const isLocked = tr.dataset.locked === "true";
+
+    if (isLocked) {
+      const unitPrice = parseFloat(tr.dataset.pricePerUnit);
+      if (input.classList.contains('quantityInput') && qty > 0) {
+        price = qty * unitPrice;
+        inputs[1].value = price.toFixed(0);
+      } else if (input.classList.contains('priceInput') && price > 0) {
+        qty = price / unitPrice;
+        inputs[0].value = qty.toFixed(2);
+      }
+    }
+    
+    // Update validation icon
+    const min = parseFloat(tr.dataset.min), max = parseFloat(tr.dataset.max);
+    const vicon = tr.querySelector('.validation-icon');
+    const pricePerUnit = qty > 0 ? price / qty : 0;
+    vicon.textContent = pricePerUnit < min ? '⬇️' : (pricePerUnit > max ? '⬆️' : '✅');
+    
+    updateSubtotal();
+    updateGrandTotal();
+  }
+
+  function removeRow(btn) {
+    const tr = btn.closest('tr');
+    const category = tr.dataset.category;
+    tr.remove();
+    
+    // Cek apakah masih ada baris dengan kategori yang sama
+    const rows = Array.from(document.querySelectorAll('#itemTable tbody tr:not(.subtotal-row):not(.category-row)'));
+    const categoryExists = rows.some(r => r.dataset.category === category);
+    
+    // Jika tidak ada lagi, hapus baris kategori juga
+    if (!categoryExists) {
+      const categoryRow = document.querySelector(`#itemTable tbody tr.category-row[data-category="${category}"]`);
+      if (categoryRow) categoryRow.remove();
+    }
+    
+    updateSubtotal();
+    updateGrandTotal();
+  }
+
+  // Ganti fungsi clearAll untuk menggunakan popup konfirmasi custom, bukan alert bawaan
+function clearAll() {
+  // Tampilkan popup konfirmasi custom
+  const popup = document.getElementById('popupConfirm');
+  const popupMessage = document.getElementById('popupMessage');
+  popupMessage.innerText = 'Apakah Anda yakin ingin menghapus semua item?';
+
+  const buttons = popup.querySelectorAll('button');
+  buttons[0].style.display = 'inline-block'; // tombol Lanjutkan
+  buttons[0].innerText = 'Ya';
+  buttons[1].style.display = 'inline-block'; // tombol Batal
+  buttons[1].innerText = 'Batal';
+
+  // Pasang event handler tombol Ya
+  buttons[0].onclick = () => {
+    // Hapus semua item
+    document.querySelector('#itemTable tbody').innerHTML = '';
+    updateSubtotal();
+    updateGrandTotal();
+    popup.style.display = 'none';
+  };
+
+  // Pasang event handler tombol Batal
+  buttons[1].onclick = () => {
+    popup.style.display = 'none';
+  };
+
+  popup.style.zIndex = 2000;
+  popup.style.display = 'block';
+}
+
+  document.querySelector('#itemTable tbody').addEventListener('click', function(e) {
+    if (e.target.classList.contains('lockBtn')) {
+      toggleLock(e.target);
+    } else if (e.target.classList.contains('helpBtn')) {
+      showHelp(e.target);
+    } else if (e.target.classList.contains('removeBtn')) {
+      removeRow(e.target);
+    }
+  });
+
+// Tambahkan fungsi export ke Excel
+function exportToExcel() {
+  const wb = XLSX.utils.book_new();
+  const ws_data = [];
+  // Header, tambahkan kolom Validasi
+  ws_data.push(['Kategori', 'Item', 'Jumlah', 'Satuan', 'Harga', 'Validasi']);
+  
+  // Ambil data dari tabel (exclude subtotal rows and category rows)
+  const rows = document.querySelectorAll('#itemTable tbody tr:not(.subtotal-row):not(.category-row)');
+  rows.forEach(row => {
+    const category = row.dataset.category;
+    const item = row.dataset.item;
+    const qty = row.querySelector('input.quantityInput').value;
+    const unit = row.dataset.unit;
+    const price = row.querySelector('input.priceInput').value;
+    const validation = row.querySelector('.validation-icon').textContent;
+    ws_data.push([
+      category,
+      item,
+      qty,
+      unit,
+      price,
+      validation
+    ]);
+  });
+
+  // Tambahkan baris subtotal per kategori
+  // Gunakan data subtotal dari fungsi sortAndGroupItems agar sesuai dengan subtotal yang tampil
+  const tbody = document.querySelector('#itemTable tbody');
+  const subtotalRows = tbody.querySelectorAll('tr.subtotal-row');
+  if (subtotalRows.length === 0) {
+    // Jika belum ada subtotal rows, hitung subtotal manual
+    const categories = [...new Set(Array.from(rows).map(r => r.dataset.category))];
+    categories.forEach(cat => {
+      const catRows = Array.from(rows).filter(r => r.dataset.category === cat);
+      const subtotal = catRows.reduce((sum, r) => sum + (parseFloat(r.querySelector('input.priceInput').value) || 0), 0);
+      ws_data.push(['', '', '', '', `Subtotal ${cat}: Rp. ${subtotal.toLocaleString()}`, '']);
+    });
+  } else {
+    // Jika ada subtotal rows di DOM, gunakan isinya
+    subtotalRows.forEach(subtotalRow => {
+      const subtotalText = subtotalRow.children[2].textContent || '';
+      ws_data.push(['', '', '', '', subtotalText, '']);
+    });
+  }
+
+  // Tambahkan baris total grand total dari tfoot
+  const grandTotalText = document.getElementById('grandTotal').textContent || '';
+  ws_data.push(['', '', '', '', 'Total: ' + grandTotalText, '']);
+
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  XLSX.utils.book_append_sheet(wb, ws, 'Data');
+  XLSX.writeFile(wb, 'KOMA_Export.xlsx');
+}
+function sortAndGroupItems() {
+  const tbody = document.querySelector('#itemTable tbody');
+  const items = Array.from(tbody.querySelectorAll('tr:not(.subtotal-row):not(.category-row)'));
+  
+  // Group items by category
+  const categorizedItems = {};
+  const categoryPositions = {};
+  
+  // Tentukan posisi kategori dari Excel
+  excelData.forEach(row => {
+    const category = row.Category;
+    if (categoryPositions[category] === undefined) {
+      categoryPositions[category] = row.originalPosition;
+    }
+  });
+  
+  // Group items
+  items.forEach(item => {
+    const category = item.dataset.category;
+    if (!categorizedItems[category]) {
+      categorizedItems[category] = [];
+    }
+    categorizedItems[category].push(item);
+  });
+  
+  // Sort categories based on their position in Excel
+  const sortedCategories = Object.keys(categorizedItems).sort((a, b) => {
+    return categoryPositions[a] - categoryPositions[b];
+  });
+  
+  // Clear tbody
+  tbody.innerHTML = '';
+  
+  // Add items back in the correct order with category headers and subtotals
+  sortedCategories.forEach(category => {
+    // Sort items within category by original position in Excel
+    const itemsInCategory = categorizedItems[category];
+    itemsInCategory.sort((a, b) => {
+      return parseInt(a.dataset.originalPosition) - parseInt(b.dataset.originalPosition);
+    });
+    
+    // Calculate subtotal for this category
+    const subtotal = itemsInCategory.reduce((sum, item) => {
+      return sum + (parseFloat(item.querySelector('input.priceInput').value) || 0);
+    }, 0);
+    
+    // Add category header with subtotal
+    const categoryRow = document.createElement('tr');
+    categoryRow.className = 'category-row';
+    categoryRow.dataset.category = category;
+    categoryRow.innerHTML = `<td>${category}</td><td></td><td style="text-align: left;">Subtotal: Rp. ${subtotal.toLocaleString()}</td><td></td><td></td`;
+    tbody.appendChild(categoryRow);
+    
+    // Add all items in this category
+    itemsInCategory.forEach(item => {
+      tbody.appendChild(item);
+    });
+  });
+}
+
+function updateSubtotal() {
+  sortAndGroupItems();
+}
+
+function updateGrandTotal() {
+  const rows = [...document.querySelectorAll('#itemTable tbody tr:not(.subtotal-row):not(.category-row)')];
+  const total = rows
+    .map(r => parseFloat(r.querySelectorAll('input')[1].value) || 0)
+    .reduce((a, b) => a + b, 0);
+  document.getElementById('grandTotal').textContent = 'Rp. ' + total.toLocaleString();
+}
+
+// Fungsi-fungsi untuk Tab 2: Lapor Harga
+function initReportDropdowns() {
+  if (excelData.length === 0) {
+    document.getElementById('reportStatus').textContent = "Silakan Load Data terlebih dahulu di tab Menu Utama";
+    return;
+  }
+  
+  const categories = [...new Set(excelData.map(row => row.Category))];
+  const catSel = document.getElementById('reportCategorySelect');
+  catSel.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+  catSel.onchange = updateReportItems;
+  updateReportItems();
+}
+
+// Perbaiki fungsi updateReportItems agar memanggil updateReportUnits setelah opsi item diubah
+function updateReportItems() {
+  const selectedCat = document.getElementById('reportCategorySelect').value;
+  const items = excelData.filter(row => row.Category === selectedCat).map(row => row.Item);
+  const itemSel = document.getElementById('reportItemSelect');
+  itemSel.innerHTML = [...new Set(items)].map(i => `<option value="${i}">${i}</option>`).join('');
+
+  // Pasang event listener onchange untuk reportItemSelect agar updateReportUnits dipanggil saat item berubah
+  itemSel.onchange = updateReportUnits;
+
+  // Panggil updateReportUnits untuk item pertama setelah opsi diupdate
+  updateReportUnits();
+}
+// Perbaiki fungsi updateReportUnits agar rentang harga sesuai dengan item yang dipilih, bukan item pertama kategori
+function updateReportUnits() {
+  const item = document.getElementById('reportItemSelect').value;
+  const row = excelData.find(r => r.Item === item);
+  const unitSel = document.getElementById('reportUnitSelect');
+  if (!row) return;
+  let units = [row.Unit];
+  let conversionMap = {[row.Unit]: 1};
+  if (row['Conversion Rules']) {
+    row['Conversion Rules'].split(',').forEach(pair => {
+      const [alt, val] = pair.split(':');
+      units.push(alt.trim());
+      conversionMap[alt.trim()] = parseFloat(val);
+    });
+  }
+  unitSel.innerHTML = [...new Set(units)].map(u => `<option value="${u}">${u}</option>`).join('');
+
+  // Tampilkan harga referensi sesuai item yang dipilih
+  const minPrice = parseInt(row.MinPrice) || 0;
+  const maxPrice = parseInt(row.MaxPrice) || 0;
+  document.getElementById('priceReference').innerHTML = `
+    <p>Rentang Harga Saat Ini: Rp ${minPrice.toLocaleString()} - Rp ${maxPrice.toLocaleString()} per ${row.Unit}</p>
+  `;
+}
+function submitPriceReport() {
+  const category = document.getElementById('reportCategorySelect').value;
+  const item = document.getElementById('reportItemSelect').value;
+  const unit = document.getElementById('reportUnitSelect').value;
+  const price = parseFloat(document.getElementById('reportPriceInput').value);
+  const location = document.getElementById('reportLocationInput').value;
+  const notes = document.getElementById('reportNotesInput').value;
+  
+  // Validasi input
+  if (!category || !item || !unit || isNaN(price) || price <= 0 || !location) {
+    showAlertPopupTab2('Mohon lengkapi semua field yang diperlukan');
+    return;
+  }
+
+  // Tampilkan status loading
+  const reportStatus = document.getElementById('reportStatus');
+  reportStatus.textContent = "Mengirim laporan...";
+  
+  // ID Google Sheet untuk referensi saja (tidak digunakan dalam pengiriman)
+  const SHEET_ID = '1hCkwFHFquthAf5TNWLxsSyvYAjWug2F8-t_EKKPLTGU';
+  
+  try {
+    // URL Google Form 
+    const formURL = 'https://docs.google.com/forms/d/e/1FAIpQLSfJbg0abw-2D3sVCmysKOAyS2HUnRIOYZbYzhCIlPOrLCYckw/formResponse';
+    
+    // Buat form tersembunyi untuk submit data
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = formURL;
+    form.target = '_blank'; // Gunakan target blank untuk debugging, ubah ke hidden_iframe untuk produksi
+    form.style.display = 'none';
+    
+    // Buat iframe tersembunyi untuk target form
+    const iframe = document.createElement('iframe');
+    iframe.name = 'hidden_iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    form.target = 'hidden_iframe';
+    
+    // Buat input fields untuk setiap entry
+    const entries = [
+      { name: 'entry.1688049905', value: category },
+      { name: 'entry.589256110', value: item },
+      { name: 'entry.1108667716', value: unit },
+      { name: 'entry.1401221558', value: price.toString() },
+      { name: 'entry.611009004', value: location },
+      { name: 'entry.23525661', value: notes || '' },
+      { name: 'entry.1337693767', value: new Date().toLocaleString() }
+    ];
+    
+    // Tambahkan input fields ke form
+    entries.forEach(entry => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = entry.name;
+      input.value = entry.value;
+      form.appendChild(input);
+    });
+    
+    // Tambahkan form ke document dan submit
+    document.body.appendChild(form);
+    
+    // Tambahkan event listener untuk mendeteksi apakah iframe berhasil dimuat
+    let formSubmitted = false;
+    iframe.onload = function() {
+      if (formSubmitted) {
+        formSuccess();
+      }
+    };
+    
+    // Submit form
+    form.submit();
+    formSubmitted = true;
+    
+    // Hanya untuk keamanan, kita set timeout untuk menganggap sukses setelah 2 detik
+    // Ini karena onload mungkin tidak selalu terpicu pada cross-origin iframes
+    setTimeout(formSuccess, 2000);
+    
+    function formSuccess() {
+      // Pastikan kita hanya menjalankan ini sekali
+      if (reportStatus.textContent === '') return;
+      
+      // Tampilkan sukses dan reset form
+      reportStatus.textContent = '';
+      const reportForm = document.getElementById('reportForm');
+      const successMsg = document.createElement('div');
+      successMsg.className = 'form-success';
+      successMsg.innerHTML = `
+        Laporan harga berhasil dikirim ke database!<br>
+        <a href="https://docs.google.com/spreadsheets/d/1hCkwFHFquthAf5TNWLxsSyvYAjWug2F8-t_EKKPLTGU/edit" target="_blank" style="color:#047857;font-weight:bold;text-decoration:underline;">
+          Lihat data di Google Sheet
+        </a>
+      `;
+      reportForm.appendChild(successMsg);
+      reportForm.reset();
+      
+      // Reset dropdown
+      setTimeout(() => {
+        if (typeof updateReportItems === 'function') updateReportItems();
+        if (typeof updateReportUnits === 'function') updateReportUnits();
+      }, 100);
+      
+      // Hapus pesan sukses dan bersihkan form/iframe setelah 10 detik
+      setTimeout(() => {
+        if (successMsg.parentNode) successMsg.remove();
+        if (document.body.contains(form)) document.body.removeChild(form);
+        if (document.body.contains(iframe)) document.body.removeChild(iframe);
+      }, 10000);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    reportStatus.textContent = "Error: " + error.message;
+  }
+}
+</script>
