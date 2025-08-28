@@ -1,7 +1,7 @@
 {
-  "name": "KoMA V3",
+  "name": "KoMA V4",
   "short_name": "KoMA",
-  "start_url": "./KoMA V3.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f5f7fa",
   "theme_color": "#4f46e5",
