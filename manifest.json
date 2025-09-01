@@ -1,5 +1,5 @@
 {
-  "name": "KoMA V4",
+  "name": "KoMA",
   "short_name": "KoMA",
   "start_url": "./",
   "display": "standalone",
@@ -18,3 +18,4 @@
     }
   ]
 }
+
