@@ -8,18 +8,16 @@ const STATIC_ASSETS = [
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap'
 ];
 
-// Install event: cache static assets
+// Install event: cache static assets and force waiting service worker to activate immediately
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(STATIC_ASSETS);
-    })
+    }).then(() => self.skipWaiting()) // Force waiting SW to become active immediately
   );
 });
 
-// ... existing code ...
-
-// Activate event: cleanup old caches if needed and claim clients immediately
+// Activate event: cleanup old caches and claim clients immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
@@ -31,12 +29,12 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch event: cache with network fallback and dynamic caching for API
+// Fetch event: network-first for HTML, cache-first for others, dynamic caching for API
 self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
 
-  // For HTML pages, use network-first strategy to always get latest HTML
-  if (event.request.mode === 'navigate' || (requestUrl.pathname.endsWith('.html') || requestUrl.pathname === '/')) {
+  // For HTML pages and navigation requests, use network-first strategy
+  if (event.request.mode === 'navigate' || requestUrl.pathname.endsWith('.html') || requestUrl.pathname === '/') {
     event.respondWith(
       fetch(event.request)
         .then(response => {
@@ -78,6 +76,3 @@ self.addEventListener('fetch', event => {
     })
   );
 });
-  );
-});
-
