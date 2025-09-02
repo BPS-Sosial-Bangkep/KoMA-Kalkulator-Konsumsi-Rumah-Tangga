@@ -803,10 +803,18 @@ function loadFromServer(excelSource) {
   }
 
   function confirmConversion(yes) {
-    document.getElementById('popupConfirm').style.display = 'none';
-    if (yes && selectedConversion) selectedConversion();
+  console.log('confirmConversion called with:', yes);
+  document.getElementById('popupConfirm').style.display = 'none';
+  if (yes && selectedConversion) {
+    console.log('Executing selectedConversion callback');
+    const callback = selectedConversion;
+    selectedConversion = null; // reset before calling to avoid reentrance issues
+    callback();
+  } else {
+    console.log('No conversion or cancelled');
     selectedConversion = null;
   }
+}
 
   // Buat dua fungsi showAlertPopup terpisah untuk tab 1 dan tab 2 agar tidak saling tumpang tindih
 
@@ -1142,21 +1150,26 @@ function addItem() {
 
   // Ganti fungsi clearAll untuk menggunakan popup konfirmasi custom, bukan alert bawaan
 function clearAll() {
+  console.log('clearAll called');
   selectedConversion = null;
-  // Tampilkan popup konfirmasi custom
+
   const popup = document.getElementById('popupConfirm');
   const popupMessage = document.getElementById('popupMessage');
   popupMessage.innerText = 'Apakah Anda yakin ingin menghapus semua item?';
 
   const buttons = popup.querySelectorAll('button');
+
+  // Reset event handlers to avoid multiple bindings
+  buttons[0].onclick = null;
+  buttons[1].onclick = null;
+
   buttons[0].style.display = 'inline-block'; // tombol Lanjutkan
   buttons[0].innerText = 'Ya';
   buttons[1].style.display = 'inline-block'; // tombol Batal
   buttons[1].innerText = 'Batal';
 
-  // Pasang event handler tombol Ya
   buttons[0].onclick = () => {
-    // Hapus semua item
+    console.log('Clear confirmed');
     document.querySelector('#itemTable tbody').innerHTML = '';
     updateSubtotal();
     updateGrandTotal();
@@ -1164,8 +1177,8 @@ function clearAll() {
     selectedConversion = null;
   };
 
-  // Pasang event handler tombol Batal
   buttons[1].onclick = () => {
+    console.log('Clear cancelled');
     popup.style.display = 'none';
     selectedConversion = null;
   };
@@ -1476,6 +1489,7 @@ function submitPriceReport() {
   }
 }
 </script>
+
 
 
 
