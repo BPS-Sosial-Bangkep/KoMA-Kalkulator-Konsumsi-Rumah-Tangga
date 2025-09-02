@@ -1095,6 +1095,7 @@ function showAlertPopupTab1(message, callback) {
 
   // Ganti fungsi clearAll untuk menggunakan popup konfirmasi custom, bukan alert bawaan
 function clearAll() {
+  selectedConversion = null;
   // Tampilkan popup konfirmasi custom
   const popup = document.getElementById('popupConfirm');
   const popupMessage = document.getElementById('popupMessage');
@@ -1113,11 +1114,13 @@ function clearAll() {
     updateSubtotal();
     updateGrandTotal();
     popup.style.display = 'none';
+    selectedConversion = null;
   };
 
   // Pasang event handler tombol Batal
   buttons[1].onclick = () => {
     popup.style.display = 'none';
+    selectedConversion = null;
   };
 
   popup.style.zIndex = 2000;
@@ -1426,6 +1429,7 @@ function submitPriceReport() {
   }
 }
 </script>
+
 
 
 
