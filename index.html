@@ -867,38 +867,85 @@ function showAlertPopupTab1(message, callback) {
   popup.style.display = 'block';
 }
 
-  function addItem() {
-    const item = document.getElementById('itemSelect').value;
-    const category = document.getElementById('categorySelect').value;
-    const unit = document.getElementById('unitSelect').value;
-    const quantity = parseFloat(document.getElementById('quantityInput').value);
-    const price = parseFloat(document.getElementById('priceInput').value);
-    
-    // Validasi input
-    if (!item || !category || !unit || isNaN(quantity) || quantity <= 0 || isNaN(price) || price <= 0) {
-      showAlertPopupTab1('Mohon lengkapi semua field dengan benar');
-      return;
-    }
-    
-    const row = excelData.find(r => r.Item === item);
-    if (!row) return;
+  // ... existing code ...
 
-    const standardUnit = row.Unit;
-    const conversionRate = conversionMap[unit];
-    const quantityInStandard = quantity * conversionRate;
+function addItem() {
+  console.log('addItem called');
+  const item = document.getElementById('itemSelect').value;
+  const category = document.getElementById('categorySelect').value;
+  const unit = document.getElementById('unitSelect').value;
+  const quantityRaw = document.getElementById('quantityInput').value;
+  const priceRaw = document.getElementById('priceInput').value;
 
-    if (unit !== standardUnit) {
-      selectedConversion = () => finalizeAddItem(category, item, quantityInStandard, standardUnit, price, row);
-      document.getElementById('popupMessage').innerText = `Satuan ${unit} akan dikonversi ke ${standardUnit}. Lanjutkan?`;
-      document.getElementById('popupConfirm').style.display = 'block';
-    } else {
-      finalizeAddItem(category, item, quantity, standardUnit, price, row);
-    }
-    
-    // Reset input fields after adding item
-    document.getElementById('quantityInput').value = '';
-    document.getElementById('priceInput').value = '';
+  // Trim inputs to avoid whitespace issues
+  const quantityStr = quantityRaw.trim();
+  const priceStr = priceRaw.trim();
+
+  // Validasi input presence
+  if (!item || !category || !unit || quantityStr === '' || priceStr === '') {
+    showAlertPopupTab1('Mohon lengkapi semua field dengan benar');
+    return;
   }
+
+  // Parse inputs carefully
+  const quantity = parseFloat(quantityStr);
+  const price = parseFloat(priceStr);
+
+  if (isNaN(quantity) || quantity <= 0 || isNaN(price) || price <= 0) {
+    showAlertPopupTab1('Jumlah dan Harga harus berupa angka positif');
+    return;
+  }
+
+  const row = excelData.find(r => r.Item === item);
+  if (!row) {
+    showAlertPopupTab1('Item tidak ditemukan di data');
+    return;
+  }
+
+  const standardUnit = row.Unit;
+  const conversionRate = conversionMap[unit];
+  if (conversionRate === undefined) {
+    showAlertPopupTab1('Konversi satuan tidak ditemukan');
+    return;
+  }
+  const quantityInStandard = quantity * conversionRate;
+
+  if (unit !== standardUnit) {
+    console.log('Conversion needed, setting selectedConversion');
+    // Important: Reset popup buttons' onclick handlers before showing popup to avoid stale handlers
+    const popup = document.getElementById('popupConfirm');
+    const buttons = popup.querySelectorAll('button');
+    buttons[0].onclick = null;
+    buttons[1].onclick = null;
+
+    selectedConversion = null; // reset before assigning
+    selectedConversion = () => finalizeAddItem(category, item, quantityInStandard, standardUnit, price, row);
+    document.getElementById('popupMessage').innerText = `Satuan ${unit} akan dikonversi ke ${standardUnit}. Lanjutkan?`;
+    popup.style.display = 'block';
+
+    // Assign confirm button handlers here to avoid conflicts
+    buttons[0].style.display = 'inline-block'; // Lanjutkan
+    buttons[0].innerText = 'Lanjutkan';
+    buttons[1].style.display = 'inline-block'; // Batal
+    buttons[1].innerText = 'Batal';
+
+    buttons[0].onclick = () => {
+      confirmConversion(true);
+    };
+    buttons[1].onclick = () => {
+      confirmConversion(false);
+    };
+
+  } else {
+    console.log('No conversion needed');
+    selectedConversion = null;
+    finalizeAddItem(category, item, quantity, standardUnit, price, row);
+  }
+
+  // Reset input fields after adding item
+  document.getElementById('quantityInput').value = '';
+  document.getElementById('priceInput').value = '';
+}
 
   function finalizeAddItem(category, item, quantity, unit, price, row) {
     const table = document.getElementById('itemTable').querySelector('tbody');
@@ -1429,6 +1476,7 @@ function submitPriceReport() {
   }
 }
 </script>
+
 
 
 
