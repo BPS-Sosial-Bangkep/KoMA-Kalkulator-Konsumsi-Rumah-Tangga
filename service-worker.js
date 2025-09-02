@@ -17,7 +17,9 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate event: cleanup old caches if needed
+// ... existing code ...
+
+// Activate event: cleanup old caches if needed and claim clients immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => {
@@ -25,13 +27,32 @@ self.addEventListener('activate', event => {
         keys.filter(key => key !== CACHE_NAME)
             .map(key => caches.delete(key))
       );
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
 // Fetch event: cache with network fallback and dynamic caching for API
 self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
+
+  // For HTML pages, use network-first strategy to always get latest HTML
+  if (event.request.mode === 'navigate' || (requestUrl.pathname.endsWith('.html') || requestUrl.pathname === '/')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Update cache with latest HTML
+          return caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, response.clone());
+            return response;
+          });
+        })
+        .catch(() => {
+          // If network fails, fallback to cache
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
 
   // Dynamic caching for API requests (e.g., allorigins)
   if (requestUrl.origin === 'https://api.allorigins.win') {
@@ -57,3 +78,6 @@ self.addEventListener('fetch', event => {
     })
   );
 });
+  );
+});
+
